@@ -1,5 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from "next";
+import GetWeatherData from "../../../../components/GetWeatherData";
 
-export default function handler(_req: NextApiRequest, res: NextApiResponse) {
-  return res.send(Math.floor(Math.random() * 3))
+async function handler(_req: NextApiRequest, res: NextApiResponse) {
+  const dadosTemporaisApi = await GetWeatherData("Lima");
+  return res.json(dadosTemporaisApi);
 }
+
+export default handler;
