@@ -172,9 +172,11 @@ function Home() {
 
   return (
     <Page>
-      <section className="flex flex-col gap-6">
-        <Text variant="h1">Como está o tempo agora?</Text>
-        <Text>
+      <section className="flex flex-col gap-6 m-10">
+        <Text variant="h1" className="text-center">
+          Como está o tempo agora?
+        </Text>
+        <Text className="text-justify">
           Este site utiliza as informações fornecidas por{" "}
           <Link href="https://openweathermap.org/" target="_blank">
             OpenWeather
