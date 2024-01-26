@@ -37,3 +37,5 @@ export const removeCity = (city: string): boolean => {
   }
   return true;
 };
+
+export default addNewCity;

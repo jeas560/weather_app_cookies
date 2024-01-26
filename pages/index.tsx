@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { Text, Page, Link } from "@vercel/examples-ui";
 import { useEffect, useState } from "react";
-import { getCities, addNewCity } from "./cookieUtils";
-import GetWeatherData from "./GetWeatherData";
+import { getCities, addNewCity } from "../functions/cookieUtils";
+import GetWeatherData from "../functions/GetWeatherData";
 
 function AddCity({ refreshCities }: { refreshCities: VoidFunction }) {
   const [isAdded, toggleAdded] = useState<boolean>(false);
