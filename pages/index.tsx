@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { Text, Page, Link } from "@vercel/examples-ui";
 import { useEffect, useState } from "react";
-import { getCities, addNewCity } from "../functions/cookieUtils";
-import GetWeatherData from "../functions/GetWeatherData";
+import { getCities, addNewCity } from "../services/cookieUtils";
+import GetWeatherData from "../services/GetWeatherData";
+import CloseIcon from "../components/CloseIcon";
 
 function AddCity({ refreshCities }: { refreshCities: VoidFunction }) {
   const [isAdded, toggleAdded] = useState<boolean>(false);
@@ -87,7 +88,15 @@ async function fetchWeatherData(nomeCidade: string) {
   }
 }
 
-function ProductCard({ nomeCidade }: { nomeCidade: string }) {
+function ProductCard({
+  nomeCidade,
+  index,
+  refreshCities,
+}: {
+  nomeCidade: string;
+  index: number;
+  refreshCities: VoidFunction;
+}) {
   const [weatherData, setWeatherData] = useState<any | null>(null);
 
   useEffect(() => {
@@ -111,7 +120,7 @@ function ProductCard({ nomeCidade }: { nomeCidade: string }) {
 
   return (
     <div className="w-5/6 max-w-lg mx-auto">
-      <section className="border border-gray-300 bg-white rounded-lg shadow-lg mt-8 w-full hover:shadow-2xl transition pt-2">
+      <section className="border border-gray-300 bg-white rounded-lg shadow-lg mt-8 w-full hover:shadow-2xl transition pt-2 relative">
         <div className="p-4 flex flex-col justify-center items-center border-b">
           <div className="flex justify-between w-full items-baseline">
             <div className="ml-3 lg:ml-10">
@@ -140,6 +149,7 @@ function ProductCard({ nomeCidade }: { nomeCidade: string }) {
             </h2>
           </div>
         </div>
+        <CloseIcon index={index} refreshCities={refreshCities} />
       </section>
     </div>
   );
@@ -193,7 +203,11 @@ function Home() {
         {existingCities ? (
           existingCities.map((cidade: string, index: number) => (
             <section key={index} className="flex flex-col gap-3">
-              <ProductCard nomeCidade={cidade} />
+              <ProductCard
+                nomeCidade={cidade}
+                index={index}
+                refreshCities={refreshCities}
+              />
             </section>
           ))
         ) : (

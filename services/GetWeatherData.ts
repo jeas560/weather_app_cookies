@@ -7,7 +7,7 @@ async function fetchWeatherData(apiUrl: string): Promise<any> {
     throw new Error("Something went wrong on API server!");
   }
 
-  return response.json();
+  return await response.json();
 }
 
 async function GetWeatherData(cidade: string): Promise<any> {

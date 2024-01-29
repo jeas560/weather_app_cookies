@@ -23,19 +23,12 @@ export const addNewCity = (city: string): string => {
   return "true";
 };
 
-export const removeCity = (city: string): boolean => {
+export const removeCity = (index: number): boolean => {
   const existingCities = getCities();
-  if (!existingCities.includes(city)) {
-    const index = existingCities.indexOf(city);
-    existingCities.splice(index, 1);
-    Cookies.set("cities", JSON.stringify(existingCities), {
-      sameSite: "none",
-      secure: true,
-    });
-  } else {
-    return false;
-  }
+  existingCities.splice(index, 1);
+  Cookies.set("cities", JSON.stringify(existingCities), {
+    sameSite: "none",
+    secure: true,
+  });
   return true;
 };
-
-export default addNewCity;
