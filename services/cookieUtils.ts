@@ -16,6 +16,7 @@ export const addNewCity = (city: string): string => {
     Cookies.set("cities", JSON.stringify(existingCities), {
       sameSite: "none",
       secure: true,
+      expires: 365,
     });
   } else {
     return "false";
