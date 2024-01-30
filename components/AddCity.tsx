@@ -3,7 +3,7 @@ import { addNewCity } from "../services/cookieUtils";
 
 function AddCity({ refreshCities }: { refreshCities: VoidFunction }) {
   const [isAdded, toggleAdded] = useState<boolean>(false);
-  const [newcity, setNewcity] = useState("");
+  const [newcity, setNewcity] = useState<string>("");
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -14,24 +14,28 @@ function AddCity({ refreshCities }: { refreshCities: VoidFunction }) {
         toggleAdded(false);
         return;
       }
-      try {
-        if (addNewCity(newcity) === "true") {
+      const fetchAddNewCity = async () => {
+        const addNewCityResponse = await addNewCity(newcity);
+        if (addNewCityResponse === "true") {
           setNewcity("");
           refreshCities();
-        } else if (addNewCity(newcity) === "false") {
+        } else if (addNewCityResponse === "false") {
           alert("Cidade já adicionada anteriormente");
           toggleAdded(false);
           return;
-        } else if (addNewCity(newcity) === "maxcities") {
+        } else if (addNewCityResponse === "maxcities") {
           alert("Número máximo de cidades alcançado no modo free!");
           toggleAdded(false);
           return;
+        } else if (addNewCityResponse === "notfound") {
+          alert("Não foi possível localizar a cidade!");
+          toggleAdded(false);
+          return;
         }
-      } catch (error) {
-        console.error("Error adding city:", error);
-      } finally {
-        timeout = setTimeout(() => toggleAdded(false), 1500);
-      }
+      };
+      fetchAddNewCity();
+
+      timeout = setTimeout(() => toggleAdded(false), 1500);
     }
     return () => clearTimeout(timeout);
   }, [isAdded]);
@@ -53,7 +57,7 @@ function AddCity({ refreshCities }: { refreshCities: VoidFunction }) {
               role="button"
               className="py-4 px-6 text-lg w-full bg-green-500 text-center text-white rounded-md"
             >
-              Cidade adicionada!
+              Processando solicitação!
             </a>
           ) : (
             <>

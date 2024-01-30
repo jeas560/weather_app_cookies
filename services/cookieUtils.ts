@@ -1,14 +1,19 @@
 import Cookies from "js-cookie";
+import { validateNewCity } from "./GetWeatherData";
 
 export const getCities = (): string[] => {
   const citiesCookie = Cookies.get("cities");
   return citiesCookie ? JSON.parse(citiesCookie) : [];
 };
 
-export const addNewCity = (city: string): string => {
+export const addNewCity = async (city: string): Promise<string> => {
   const existingCities = getCities();
+  const dadosTemporaisApi = await validateNewCity(city);
   if (existingCities.length >= 3) {
     return "maxcities";
+  }
+  if (!dadosTemporaisApi) {
+    return "notfound";
   }
   if (!existingCities.includes(city)) {
     city = city.charAt(0).toUpperCase() + city.slice(1);

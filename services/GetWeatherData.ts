@@ -10,19 +10,32 @@ async function fetchWeatherData(apiUrl: string): Promise<any> {
   return await response.json();
 }
 
-async function GetWeatherData(cidade: string): Promise<any> {
+export async function validateNewCity(newCity: string): Promise<any> {
   const api_key = process.env.NEXT_PUBLIC_API_KEY;
   const api_url = process.env.NEXT_PUBLIC_API_URL;
-  const apiUrl = `${api_url}${cidade}&units=metric&lang=pt_br&appid=${api_key}`;
+  const apiUrl = `${api_url}${newCity}&units=metric&lang=pt_br&appid=${api_key}`;
+  try {
+    const response = await fetchWeatherData(apiUrl);
+    return response;
+  } catch (error) {
+    console.error(`Something goes wrong with ${newCity}:`, error);
+    return null;
+  }
+}
 
-  const dadosTemporaisApi = await fetchWeatherData(apiUrl);
-  return {
-    city: capitalizeFirstLetter(dadosTemporaisApi.name),
-    temperature: parseFloat(dadosTemporaisApi.main.temp),
-    humidity: parseFloat(dadosTemporaisApi.main.humidity),
-    description: dadosTemporaisApi.weather[0].description,
-    icon: dadosTemporaisApi.weather[0].icon,
-  };
+async function GetWeatherData(newCity: string): Promise<any> {
+  const dadosTemporaisApi = await validateNewCity(newCity);
+  if (dadosTemporaisApi) {
+    return {
+      city: capitalizeFirstLetter(dadosTemporaisApi.name),
+      temperature: parseFloat(dadosTemporaisApi.main.temp),
+      humidity: parseFloat(dadosTemporaisApi.main.humidity),
+      description: dadosTemporaisApi.weather[0].description,
+      icon: dadosTemporaisApi.weather[0].icon,
+    };
+  } else {
+    return null;
+  }
 }
 
 function capitalizeFirstLetter(str: string): string {

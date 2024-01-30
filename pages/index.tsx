@@ -59,7 +59,7 @@ function Home() {
             </section>
           ))
         ) : (
-          <p>Loading cities...</p>
+          <p className="text-center">Loading cities...</p>
         )}
       </section>
     </Page>
