@@ -18,6 +18,7 @@ const CloseIcon = (props: { index: number; refreshCities: VoidFunction }) => {
         alt="close icon"
         width="20"
         height="20"
+        title="Apagar Cidade"
       />
     </div>
   );
