@@ -1,44 +1,56 @@
 import { useEffect, useState } from "react";
 import { addNewCity } from "../services/cookieUtils";
+import { toast } from "react-toastify";
 
 function AddCity({ refreshCities }: { refreshCities: VoidFunction }) {
   const [isAdded, toggleAdded] = useState<boolean>(false);
-  const [newcity, setNewcity] = useState<string>("");
+  const [newCity, setNewCity] = useState<string>("");
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
-    if (isAdded) {
-      if (newcity.length === 0) {
-        alert("O campo precisa ser preenchido");
-        toggleAdded(false);
-        return;
-      }
-      const fetchAddNewCity = async () => {
-        const addNewCityResponse = await addNewCity(newcity);
-        if (addNewCityResponse === "true") {
-          setNewcity("");
-          refreshCities();
-        } else if (addNewCityResponse === "false") {
-          alert("Cidade já adicionada anteriormente");
-          toggleAdded(false);
-          return;
-        } else if (addNewCityResponse === "maxcities") {
-          alert("Número máximo de cidades alcançado no modo free!");
-          toggleAdded(false);
-          return;
-        } else if (addNewCityResponse === "notfound") {
-          alert("Não foi possível localizar a cidade!");
-          toggleAdded(false);
+    const handleAddCity = async () => {
+      try {
+        if (newCity.length === 0) {
+          toast.error("O campo precisa ser preenchido");
           return;
         }
-      };
-      fetchAddNewCity();
 
-      timeout = setTimeout(() => toggleAdded(false), 1500);
+        const addNewCityResponse = await addNewCity(newCity);
+
+        switch (addNewCityResponse) {
+          case "true":
+            setNewCity("");
+            refreshCities();
+            break;
+          case "false":
+            toast.warning("Cidade já adicionada anteriormente");
+            break;
+          case "maxcities":
+            toast.warning("Número máximo de cidades alcançado no modo free!");
+            break;
+          case "notfound":
+            toast.error("Não foi possível localizar a cidade!");
+            break;
+          default:
+            toast.error("Erro desconhecido");
+            break;
+        }
+      } catch (error) {
+        console.error("Error adding city:", error);
+        toast.error("Erro ao processar a solicitação");
+      } finally {
+        toggleAdded(false);
+        timeout = setTimeout(() => toast.dismiss(), 3000);
+      }
+    };
+
+    if (isAdded) {
+      handleAddCity();
     }
+
     return () => clearTimeout(timeout);
-  }, [isAdded]);
+  }, [isAdded, newCity, refreshCities]);
 
   return (
     <div className="w-5/6 max-w-lg mx-auto">
@@ -46,29 +58,28 @@ function AddCity({ refreshCities }: { refreshCities: VoidFunction }) {
         <div className="p-4 flex flex-col justify-center items-center border-b">
           <input
             type="text"
-            value={newcity}
-            onChange={(e) => setNewcity(e.target.value)}
+            value={newCity}
+            onChange={(e) => setNewCity(e.target.value)}
             className="border rounded px-2 py-1 flex-1"
           />
         </div>
         <div className="p-4 gap-4 flex flex-col justify-center items-center border-b">
           {isAdded ? (
-            <a
+            <button
               role="button"
               className="py-4 px-6 text-lg w-full bg-green-500 text-center text-white rounded-md"
             >
               Processando solicitação!
-            </a>
+            </button>
           ) : (
             <>
               {
-                <a
-                  role="button"
+                <button
                   onClick={() => toggleAdded(true)}
                   className="py-4 px-6 text-lg w-full bg-black text-center text-white hover:text-white rounded-md hover:bg-gray-900"
                 >
                   Adicionar cidade
-                </a>
+                </button>
               }
             </>
           )}

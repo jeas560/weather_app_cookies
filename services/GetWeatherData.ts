@@ -27,7 +27,7 @@ async function GetWeatherData(newCity: string): Promise<any> {
   const dadosTemporaisApi = await validateNewCity(newCity);
   if (dadosTemporaisApi) {
     return {
-      city: capitalizeFirstLetter(dadosTemporaisApi.name),
+      city: dadosTemporaisApi.name,
       temperature: parseFloat(dadosTemporaisApi.main.temp),
       humidity: parseFloat(dadosTemporaisApi.main.humidity),
       description: dadosTemporaisApi.weather[0].description,
@@ -36,10 +36,6 @@ async function GetWeatherData(newCity: string): Promise<any> {
   } else {
     return null;
   }
-}
-
-function capitalizeFirstLetter(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export default GetWeatherData;

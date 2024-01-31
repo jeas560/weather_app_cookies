@@ -9,15 +9,15 @@ export const getCities = (): string[] => {
 export const addNewCity = async (city: string): Promise<string> => {
   const existingCities = getCities();
   const dadosTemporaisApi = await validateNewCity(city);
+  const cityName = dadosTemporaisApi.name;
   if (existingCities.length >= 3) {
     return "maxcities";
   }
   if (!dadosTemporaisApi) {
     return "notfound";
   }
-  if (!existingCities.includes(city)) {
-    city = city.charAt(0).toUpperCase() + city.slice(1);
-    existingCities.push(city);
+  if (!existingCities.includes(cityName)) {
+    existingCities.push(cityName);
     Cookies.set("cities", JSON.stringify(existingCities), {
       sameSite: "none",
       secure: true,
